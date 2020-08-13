@@ -14,8 +14,12 @@ jobs:
     - name: list files in local dir
       run: ls -la
 
+    - name: Get tag
+      id: tag
+      uses: dawidd6/action-get-tag@v1
+
     - name: Package lib into asset archive
-      run: tar cvzf sensu-momentjs_${{ github.event.release.tag_name }}.tar.gz lib/
+      run: tar cvzf sensu-momentjs_${{ steps.tag.outputs.tag }}.tar.gz lib/
 
     - name: Create Release
       id: create_release
@@ -35,6 +39,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        asset_path: ./sensu-momentjs_${{ github.event.release.tag_name }}.tar.gz
-        asset_name: sensu-momentjs_${{ github.event.release.tag_name }}.tar.gz
+        asset_path: ./sensu-momentjs_${{ steps.tag.outputs.tag }}.tar.gz
+        asset_name: sensu-momentjs_${{ steps.tag.outputs.tag }}.tar.gz
         asset_content_type: application/zip
