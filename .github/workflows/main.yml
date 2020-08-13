@@ -4,7 +4,7 @@ on:
   push:
     tags:
       - '*'
-      
+
 jobs:
   package:
     runs-on: [self-hosted, linux]
@@ -15,8 +15,8 @@ jobs:
       run: ls -la
 
     - name: Package lib into asset archive
-      run: tar cvzf sensu-momentjs_${{ GITHUB_REF#refs/heads/ }}.tar.gz lib/
- 
+      run: tar cvzf sensu-momentjs_${{ github.ref#refs/heads/ }}.tar.gz lib/
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -29,12 +29,12 @@ jobs:
         prerelease: false
 
     - name: Upload Release Asset
-      id: upload-release-asset 
+      id: upload-release-asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./sensu-momentjs_${{ GITHUB_REF#refs/heads/ }}.tar.gz
-        asset_name: sensu-momentjs_${{ GITHUB_REF#refs/heads/ }}.tar.gz
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+        asset_path: ./sensu-momentjs_${{ github.ref#refs/heads/ }}.tar.gz
+        asset_name: sensu-momentjs_${{ github.ref#refs/heads/ }}.tar.gz
         asset_content_type: application/zip
